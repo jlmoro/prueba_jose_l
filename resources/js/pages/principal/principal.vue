@@ -23,7 +23,7 @@
                 <th scope="col">Tipo Documento</th>
                 <th scope="col">Documento</th>
                 <th scope="col">Ciudad</th>
-                <!-- <th colspan="2" scope="col">Acciones</th> -->
+                <th colspan="2" scope="col">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -39,7 +39,8 @@
                 </td>
                 <td>{{data.documento}}</td>
                 <td>{{data.ciudad}}</td>
-
+                <td><b-button size="sm" variant="warning" @click="editar_persona(data)">Editar</b-button></td>
+                <td><b-button size="sm" variant="danger" @click="eliminar_persona(data)">Eliminar</b-button> </td>
               </tr>
             </tbody>
           </table>
@@ -48,8 +49,13 @@
     </div>
 
     <modal-crear ref="modalRegistrarPersona" :ruta="ruta" @persona:registrada="listar_personas"/>
-    <!-- <modal-crear ref="modalRegistrarPersona" :ruta="ruta" /> -->
-    <modal-editar ref="modalEditarPersona" :ruta="ruta" />
+    <modal-editar ref="modalEditarPersona" :ruta="ruta" @persona:actualizar="listar_personas"/>
+
+    <modal-eliminar ref="modalEliminar"
+    titulo="Eliminar Persona"
+    :cuerpo="`¿Desea eliminar el registro de ${persona.nombre} ${persona.apellido}?`"
+    @eliminar="eliminandoPersona"
+    />
 
   </section>
 </template>
@@ -63,12 +69,31 @@ export default {
     return{
       ruta:'/api/personas',
       personas:[],
+      persona:''
     }
   },
   mounted(){
     this.listar_personas()
   },
   methods: {
+    async eliminandoPersona(){
+      try {
+
+        const {data} = await axios.delete(`${this.ruta}/${this.persona.id}/eliminar-persona`)
+        this.$refs.modalEliminar.toggle()
+        this.listar_personas()
+
+      } catch (e) {
+        console.warn(e);
+      }
+    },
+    eliminar_persona(dato){
+      this.persona = dato
+      this.$refs.modalEliminar.toggle()
+    },
+    editar_persona(dato){
+      this.$refs.modalEditarPersona.toggle(dato);
+    },
     registrar_persona(){
       this.$refs.modalRegistrarPersona.toggle();
     },

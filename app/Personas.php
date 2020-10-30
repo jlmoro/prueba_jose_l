@@ -8,5 +8,5 @@ class Personas extends Model
 {
   protected $table = 'personas';
   protected $primaryKey = 'id';
-  protected $guarded = [];
+  protected $guarded = ['ciudad'];
 }

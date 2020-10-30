@@ -27,6 +27,25 @@ class PersonasController extends Controller
     }
   }
 
+  public function eliminar_persona($id_persona)
+  {
+    try {
+
+      return DB::transaction(function() use($id_persona){
+
+        $per = Personas::find($id_persona);
+        $per->delete();
+
+        return 'Eliminado Correctamente';
+
+      },5);
+
+    } catch (\Exception $e) {
+      return $e;
+    }
+
+  }
+
   public function listar_ciudades()
   {
     try {
@@ -51,6 +70,26 @@ class PersonasController extends Controller
         Personas::create($request->all());
 
         return 'Creado Correctamente';
+
+      },5);
+
+    } catch (\Exception $e) {
+      return $e;
+    }
+
+  }
+
+  public function editar_persona(Request $request)
+  {
+    try {
+
+      return DB::transaction(function() use($request){
+
+        $persona = Personas::find($request->id);
+        $persona->fill($request->all());
+        $persona->update();
+
+        return 'Actualizado Correctamente';
 
       },5);
 
