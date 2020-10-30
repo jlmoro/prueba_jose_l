@@ -67,11 +67,22 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
+      Route::prefix('api')
+      ->middleware(['api'])
+      ->namespace($this->namespace)
+      ->group(base_path('routes/api.php'));
+
+      $files = \File::allFiles(base_path('routes/api'));
+      foreach ($files as $file) {
         Route::prefix('api')
-             ->middleware('api')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/api.php'));
+        ->middleware('api')
+        ->namespace($this->namespace)
+        ->group($file);
+      }
+
     }
+
+
 
     /**
      * Define the "spa" routes for the application.

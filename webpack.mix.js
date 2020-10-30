@@ -1,6 +1,7 @@
 const path = require('path')
 const fs = require('fs-extra')
 const mix = require('laravel-mix')
+const webpack = require('webpack')
 require('laravel-mix-versionhash')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
@@ -21,8 +22,15 @@ if (mix.inProduction()) {
 
 mix.webpackConfig({
   plugins: [
-    // new BundleAnalyzerPlugin()
-  ],
+        new webpack.ProvidePlugin({
+            el: '#app',
+            $: 'jquery',
+            jQuery: 'jquery',
+            axios: 'axios',
+            Swal:'Swal',
+            '_': 'lodash',
+        })
+    ],
   resolve: {
     extensions: ['.js', '.json', '.vue'],
     alias: {
